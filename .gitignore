@@ -1,0 +1,21 @@
+# Datasets and processed data (too large for git)
+detection-model/data_prep/processed_dataset/
+*.mp4
+*.avi
+*.mov
+data/
+datasets/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+.env
+
+# Model checkpoints (large files)
+*.pth
+*.pt
+*.h5
+
+# OS
+.DS_Store
