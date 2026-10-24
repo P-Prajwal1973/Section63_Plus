@@ -1,0 +1,7 @@
+torch
+transformers
+opencv-python
+numpy
+scikit-learn
+tqdm
+pillow
