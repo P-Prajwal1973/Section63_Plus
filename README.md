@@ -46,25 +46,63 @@ section63-plus/
 - **Datasets:** FaceForensics++ (C23), Celeb-DF v2
 - **Backend:** FastAPI
 - **Database/logging:** SQLite + hashlib (SHA-256)
-- **Certificate generation:** ReportLab / WeasyPrint
+- **Certificate generation:** ReportLab (`certificate-gen`)
 - **Frontend:** React (or plain HTML/CSS/JS)
 
 ## Setup
 
-Each module has its own `requirements.txt`. To get started with the detection model pipeline:
+Dependencies are module-specific. The detection data-preparation pipeline has a
+`requirements.txt`; the certificate generator uses ReportLab, and the custody
+log uses only the Python standard library.
+
+### Certificate generator
+
+Create an environment and install ReportLab:
+
+```bash
+cd certificate-gen
+python -m venv .venv
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+# macOS/Linux: source .venv/bin/activate
+python -m pip install reportlab
+python generate_certificate.py
+```
+
+The script writes `certificate.pdf` in the current directory. The reusable
+template data is in `certificate_fields.py`; `generate_certificate()` expects
+`part_a`, `part_b`, and `ai_annexure` dictionaries. Generated certificates are
+drafts and must be reviewed and signed by the responsible officer or expert.
+
+### Custody log
+
+The `forensics-log` module uses SQLite and Python's standard library, so it
+requires no third-party package installation. `custody_log.py` exposes
+`init_db()`, `hash_file()`, `log_event()`, and `verify_chain()`.
+
+`test_custody.py` is currently a demonstration script, not a repeatable
+automated test: it appends events and edits row 2 to demonstrate tamper
+detection. `custody_log.py` stores `custody.db` relative to the current working
+directory. Run the demonstration only with a fresh, disposable database; a
+repeat run against the same database reports a failed chain before the
+tampering step. Do not run it against a real custody log.
+
+To get started with the detection model pipeline:
 
 ```bash
 cd detection-model/data_prep
 python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+# Windows PowerShell: venv\Scripts\Activate.ps1
+# macOS/Linux: source venv/bin/activate
+python -m pip install -r requirements.txt
 ```
 
 See `detection-model/data_prep/README.md` for dataset preparation instructions.
 
 ## Status
 
-Project in progress — final-year BCA project, 5-month timeline.
+Project in progress — final-year BCA project, 5-month timeline. The certificate
+generator and custody logger are standalone prototypes; integration with the
+detection pipeline, backend, and dashboard is still in progress.
 
 ## Legal grounding
 
